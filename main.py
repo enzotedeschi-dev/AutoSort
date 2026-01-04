@@ -16,7 +16,7 @@ def main():
 
     if risultati is not None:
         logging.info("Starting classification via the artificial intelligence algorithm...")
-        data_json = scanner.analisi_cartelle(risultati)
+        data_json = scanner.analisi_cartelle()
         scanner.genera_report(data_json)
     else:
         logging.critical("Classification process stopped due to scan errors!")

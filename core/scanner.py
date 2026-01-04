@@ -39,34 +39,48 @@ class AutoSort:
         
         return file_trovati
 
-    def analisi_cartelle(self, file_trovati):
-        nomi_file = ", ".join(p.name for p in file_trovati)
-        data = classifica_file_ai(nomi_file)
+    def analisi_cartelle(self):
+        data_totale = {}
 
-        for cartella, files in data.items():
-            percorso_cartella = self.percorso / cartella
-            percorso_cartella.mkdir(parents=True, exist_ok=True)
-            logging.info(f"Folder '{cartella}' was created successfully.")
+        while True:
+            rimanenti = self.scansione()
+            if not rimanenti:
+                break
 
-            for file in files:
-                origine = self.percorso / file
-                destinazione_file = percorso_cartella / origine.name
+            nomi_file = "\n".join(p.name for p in rimanenti)
+            data = classifica_file_ai(nomi_file)
 
-                if not origine.exists():
-                    logging.warning(f"Source file '{origine}' does not exist, skipping.")
-                    continue
+            file_spostati = 0
+            for cartella, files in data.items():
+                percorso_cartella = self.percorso / cartella
+                percorso_cartella.mkdir(parents=True, exist_ok=True)
+                logging.info(f"Folder '{cartella}' was created successfully.")
 
-                if destinazione_file.exists():
-                    logging.warning(f"File '{destinazione_file.name}' already exists in folder '{cartella}'!")
-                    continue
+                for file in files:
+                    origine = self.percorso / file
+                    destinazione_file = percorso_cartella / origine.name
 
-                try:
-                    shutil.move(origine, destinazione_file)
-                    logging.info(f"File '{file}' was moved successfully to folder '{cartella}'!")
-                except Exception as e:
-                    logging.error(f"Error while moving file '{file}' to folder '{cartella}': {e}")
-                    
-        return data 
+                    if not origine.exists():
+                        logging.warning(f"Source file '{origine}' does not exist, skipping.")
+                        continue
+
+                    if destinazione_file.exists():
+                        logging.warning(f"File '{destinazione_file.name}' already exists in folder '{cartella}'!")
+                        continue
+
+                    try:
+                        shutil.move(origine, destinazione_file)
+                        logging.info(f"File '{file}' was moved successfully to folder '{cartella}'!")
+                        file_spostati += 1
+                        data_totale.setdefault(cartella, []).append(file)
+                    except Exception as e:
+                        logging.error(f"Error while moving file '{file}' to folder '{cartella}': {e}")
+
+            if file_spostati == 0:
+                logging.warning("No files were moved in this iteration. Stopping to avoid an infinite loop.")
+                break
+
+        return data_totale
          
     def genera_report(self, data_json):
         file_totali = 0
