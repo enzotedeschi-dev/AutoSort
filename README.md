@@ -12,6 +12,12 @@ This project is designed to be run locally (it **moves** files on your filesyste
 - **JSON report** generation for each run
 - **Structured logging** to console and `autosort.log`
 
+> [!IMPORTANT]
+> AutoSort uses AI to classify files. In rare cases, the AI may return an invalid response (e.g. JSON formatting issues) or an incomplete classification.
+> If the program stops with an error or the result looks incomplete, run the same command again.
+> AutoSort is designed with multiple safety filters/checks to reduce the impact of AI mistakes.
+> Safety checks: no automatic renaming; unknown file names are skipped; existing destination files are skipped.
+
 ## Requirements
 
 - Python 3.10+ (recommended)
