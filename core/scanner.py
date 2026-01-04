@@ -45,6 +45,7 @@ class AutoSort:
         while True:
             rimanenti = self.scansione()
             if not rimanenti:
+                logging.info("No remaining files found. Classification completed.")
                 break
 
             nomi_file = "\n".join(p.name for p in rimanenti)

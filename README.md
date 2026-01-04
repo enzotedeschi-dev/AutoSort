@@ -44,6 +44,33 @@ Do **not** commit your `.env` file.
 
 Alternatively, you can set `OPENAI_API_KEY` as an environment variable.
 
+### Model and parameters (`config.json`)
+
+AutoSort reads model settings from `config.json` in the project root.
+If the file does not exist, AutoSort will create it automatically with default values.
+
+Current settings:
+
+```json
+{
+  "openai-model": "gpt-4o-mini",
+  "temperature": 0
+}
+```
+
+- **`openai-model`**
+  - You can change the OpenAI model used for classification.
+  - In general:
+    - `gpt-4o-mini`: fastest and cheapest, usually good enough for file organization.
+    - `gpt-4o`: higher quality and more consistent classification on tricky/ambiguous filenames, but typically costs more.
+    - `gpt-5`: newer and more capable, but typically more expensive.
+- **`temperature`**
+  - Recommended: `0` (more deterministic and more stable structured output).
+
+> [!NOTE]
+> Choosing a more capable model generally improves accuracy, but it can increase latency and API cost.
+> OpenAI charges per token, so the final cost depends on how many file names you send per request.
+
 ## Usage
 
 Example (Windows path shown):
@@ -60,28 +87,10 @@ python main.py --dir "C:\\Users\\youruser\\Downloads" --ext .png .jpg
 - This tool **moves files**. Test on a copy or on a dedicated folder first.
 - If a destination file already exists, AutoSort will skip moving that file.
 
-## Project structure
-
-```text
-AutoSort/
-  main.py
-  core/
-    scanner.py
-  cli/
-    args.py
-  ia/
-    ia_dirscan.py
-  utils/
-    logging_setup.py
-    json/
-      parse_json.py
-    report_manager/
-      creazione_report.py
-```
-
 ## Troubleshooting
 
 - **Missing OPENAI_API_KEY**
   - Create a `.env` file (see `.env.example`) or set the `OPENAI_API_KEY` environment variable.
 - **The AI output is not valid JSON**
-  - The tool expects the model response to be JSON-only. If it fails, retry.
+  - AutoSort requests a structured JSON response. In rare cases, the API call may still fail.
+    If it happens, retry the same command.
