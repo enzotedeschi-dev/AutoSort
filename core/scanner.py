@@ -41,14 +41,21 @@ class AutoSort:
 
     def analisi_cartelle(self):
         data_totale = {}
-
+        totale_classificazioni = 0
         while True:
             rimanenti = self.scansione()
+            if rimanenti is None:
+                return None
             if not rimanenti:
                 logging.info("No remaining files found. Classification completed.")
                 break
+            batch = rimanenti[:50]
 
-            nomi_file = "\n".join(p.name for p in rimanenti)
+            nomi_file = "\n".join(p.name for p in batch)
+            totale_classificazioni += 1
+            logging.info(
+                f"Starting classification batch #{totale_classificazioni} (up to {len(batch)} files). This may take a while..."
+            )
             data = classifica_file_ai(nomi_file)
 
             file_spostati = 0

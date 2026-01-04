@@ -12,14 +12,14 @@ def main():
     scanner = AutoSort(args.dir, args.ext)
 
     logging.info("Starting intelligent scan...")
-    risultati = scanner.scansione()
+    logging.info("Starting classification via the artificial intelligence algorithm...")
+    data_json = scanner.analisi_cartelle()
 
-    if risultati is not None:
-        logging.info("Starting classification via the artificial intelligence algorithm...")
-        data_json = scanner.analisi_cartelle()
-        scanner.genera_report(data_json)
-    else:
+    if data_json is None:
         logging.critical("Classification process stopped due to scan errors!")
+        return
+
+    scanner.genera_report(data_json)
 
 
 if __name__ == "__main__":
