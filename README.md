@@ -76,7 +76,7 @@ Current settings:
 Example (Windows path shown):
 
 ```bash
-python main.py --dir "C:\\Users\\youruser\\Downloads" --ext .png .jpg
+python main.py --dir "C:\Users\youruser\Downloads" --ext .png .jpg
 ```
 
 - `--dir` is required
