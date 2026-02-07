@@ -29,7 +29,7 @@ class AutoSort:
                     logging.info(f"Item found: {elemento}")
                     file_trovati.append(elemento)
                 else:
-                    if elemento.suffix in self.ext:
+                    if elemento.suffix.lower() in self.ext:
                         logging.info(f"Item found: {elemento}")
                         file_trovati.append(elemento)
                     else:
@@ -56,13 +56,20 @@ class AutoSort:
             logging.info(
                 f"Starting classification batch #{totale_classificazioni} (up to {len(batch)} files). This may take a while..."
             )
-            data = classifica_file_ai(nomi_file)
+            try:
+                data = classifica_file_ai(nomi_file)
+            except Exception as e:
+                logging.error(f"AI classification failed: {e}")
+                return None
 
             file_spostati = 0
             for cartella, files in data.items():
+                if not files:
+                    continue
                 percorso_cartella = self.percorso / cartella
-                percorso_cartella.mkdir(parents=True, exist_ok=True)
-                logging.info(f"Folder '{cartella}' was created successfully.")
+                if not percorso_cartella.exists():
+                    percorso_cartella.mkdir(parents=True)
+                    logging.info(f"Folder '{cartella}' was created successfully.")
 
                 for file in files:
                     origine = self.percorso / file

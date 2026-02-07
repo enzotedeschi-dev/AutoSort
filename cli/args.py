@@ -9,6 +9,9 @@ def config_args():
 
     args = parser.parse_args()
 
+    if args.ext:
+        args.ext = [e.lower() if e.startswith(".") else f".{e.lower()}" for e in args.ext]
+
     logging.info(
     "AutoSort started successfully. | dir=%s | ext=%s",
     args.dir,
